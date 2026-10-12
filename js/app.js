@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let cuposDisponibles = window.CONFIG.MAX_REGISTRACIONES || 73;
   let totalRegistrados = 0;
   let estaAgotado = false;
+  let cedulasRegistradas = [];
 
   // =========================================================================
   // 1. GESTIÓN DE ROLES (MUTUAMENTE EXCLUYENTES O NINGUNO)
@@ -126,6 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Verificar si la cédula ya fue registrada previamente
+    if (cedulasRegistradas.includes(val)) {
+      setFieldState(cedulaInput, cedulaFeedback, false, 'Esta cédula ya se encuentra registrada para Metroville 2026.');
+      return;
+    }
+
     const res = Validator.validarCedulaEcuador(val);
     setFieldState(cedulaInput, cedulaFeedback, res.esValido, res.mensaje);
   });
@@ -174,11 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
   async function consultarCupos() {
     const url = window.CONFIG.APPS_SCRIPT_URL;
 
+    // Cargar cédulas guardadas en este dispositivo
+    const guardadasLocal = JSON.parse(localStorage.getItem('metroville_cedulas_registradas') || '[]');
+    cedulasRegistradas = [...new Set([...cedulasRegistradas, ...guardadasLocal])];
+
     // Si aún no se configuró la URL, usar simulación local
     if (!url || url.trim() === '') {
       const registrosLocales = JSON.parse(localStorage.getItem('metroville_test_registros') || '[]');
       const total = registrosLocales.length;
       const max = window.CONFIG.MAX_REGISTRACIONES || 73;
+      cedulasRegistradas = [...new Set([...cedulasRegistradas, ...registrosLocales.map(r => r.cedula)])];
       actualizarEstadoCupos(total, max, Math.max(0, max - total));
       return;
     }
@@ -188,6 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok) {
         const data = await response.json();
         if (data.status === 'success') {
+          if (data.cedulasRegistradas && Array.isArray(data.cedulasRegistradas)) {
+            cedulasRegistradas = [...new Set([...cedulasRegistradas, ...data.cedulasRegistradas])];
+          }
           actualizarEstadoCupos(
             data.totalRegistros || 0,
             data.limiteMaximo || window.CONFIG.MAX_REGISTRACIONES,
@@ -244,6 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
         celularInput.focus();
         return;
       }
+    }
+
+    // Validar Cédula única
+    const cedulaVal = cedulaInput.value.trim();
+    if (cedulasRegistradas.includes(cedulaVal)) {
+      setFieldState(cedulaInput, cedulaFeedback, false, 'Esta cédula ya se encuentra registrada para Metroville 2026.');
+      mostrarToast('Esta cédula ya se encuentra registrada en la lista de asistentes.', 'error');
+      cedulaInput.focus();
+      return;
     }
 
     const payload = {
@@ -308,6 +332,14 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'GET',
           mode: 'no-cors'
         });
+      }
+
+      // Guardar cédula para bloquear reenvíos inmediatos
+      cedulasRegistradas.push(payload.cedula);
+      const guardadas = JSON.parse(localStorage.getItem('metroville_cedulas_registradas') || '[]');
+      if (!guardadas.includes(payload.cedula)) {
+        guardadas.push(payload.cedula);
+        localStorage.setItem('metroville_cedulas_registradas', JSON.stringify(guardadas));
       }
 
       // Registro completado y registrado en Google Sheets

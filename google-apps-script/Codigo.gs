@@ -1,15 +1,14 @@
 /**
  * =======================================================================
  * METROVILLE 2026 - REGISTRO DE ALUMNIS Y ESTUDIANTES ONLINE (HALLOWEEN)
- * Google Apps Script - Endpoint Ultra-Robusto para Google Sheets
+ * Google Apps Script - Endpoint con Validación de Cédula Única
  * =======================================================================
  */
 
 var LIMITE_MAXIMO_REGISTROS = 73;
 
 /**
- * Inicializa la hoja de cálculo con encabezados si está vacía.
- * Si se ejecuta manualmente desde el botón "Ejecutar", obtiene la hoja activa automáticamente.
+ * Inicializa la hoja con encabezados si está vacía.
  */
 function inicializarHojaSiEsNecesario(sheet) {
   if (!sheet) {
@@ -34,8 +33,6 @@ function inicializarHojaSiEsNecesario(sheet) {
     sheet.setFrozenRows(1);
     SpreadsheetApp.flush();
     Logger.log('Encabezados creados exitosamente.');
-  } else {
-    Logger.log('La hoja ya cuenta con ' + sheet.getLastRow() + ' filas.');
   }
 }
 
@@ -52,8 +49,25 @@ function obtenerTotalRegistros(sheet) {
 }
 
 /**
- * Función central de procesamiento de registros:
- * Funciona tanto desde GET como desde POST.
+ * Obtiene la lista de todas las cédulas ya registradas en la hoja.
+ */
+function obtenerCedulasRegistradas(sheet) {
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  }
+  var total = obtenerTotalRegistros(sheet);
+  if (total <= 0) return [];
+  var values = sheet.getRange(2, 3, total, 1).getValues();
+  var cedulas = [];
+  for (var i = 0; i < values.length; i++) {
+    var c = values[i][0].toString().replace(/^'/, '').trim();
+    if (c) cedulas.push(c);
+  }
+  return cedulas;
+}
+
+/**
+ * Procesa el registro con control estricto de cédula única y límite de cupos.
  */
 function procesarRegistro(data) {
   try {
@@ -72,7 +86,6 @@ function procesarRegistro(data) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 2. Extraer campos
     var nombre = (data.nombre || '').toString().trim();
     var cedula = (data.cedula || '').toString().trim();
     var email = (data.email || '').toString().trim();
@@ -83,28 +96,25 @@ function procesarRegistro(data) {
     if (!nombre || !cedula || !email) {
       return ContentService.createTextOutput(JSON.stringify({
         status: 'error',
-        message: 'Faltan campos obligatorios (Nombre, Cédula o Correo).'
+        message: 'Faltan campos obligatorios.'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 3. Validar duplicados por cédula
+    // 2. Control estricto de duplicados por CÉDULA
     if (totalActual > 0) {
-      var cedulasExistentes = sheet.getRange(2, 3, totalActual, 1).getValues();
-      for (var i = 0; i < cedulasExistentes.length; i++) {
-        var cedulaFila = cedulasExistentes[i][0].toString().replace(/^'/, '').trim();
-        if (cedulaFila === cedula) {
-          return ContentService.createTextOutput(JSON.stringify({
-            status: 'error',
-            message: 'Esta cédula ya se encuentra registrada.'
-          })).setMimeType(ContentService.MimeType.JSON);
-        }
+      var cedulasExistentes = obtenerCedulasRegistradas(sheet);
+      if (cedulasExistentes.indexOf(cedula) !== -1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: 'error',
+          code: 'DUPLICATE_CEDULA',
+          message: 'Esta cédula ya se encuentra registrada en la lista de asistentes.'
+        })).setMimeType(ContentService.MimeType.JSON);
       }
     }
 
-    // 4. Fecha de Ecuador
+    // 3. Registrar fila
     var fechaRegistro = Utilities.formatDate(new Date(), "America/Guayaquil", "yyyy-MM-dd HH:mm:ss");
 
-    // Guardar fila (antepone apóstrofe para conservar ceros a la izquierda)
     sheet.appendRow([
       fechaRegistro,
       nombre,
@@ -124,13 +134,13 @@ function procesarRegistro(data) {
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
       status: 'error',
-      message: 'Error al registrar: ' + error.toString()
+      message: error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 /**
- * GET: Soporta tanto consulta de cupos como registro directo.
+ * GET: Devuelve estado de cupos y lista de cédulas registradas para validación en tiempo real.
  */
 function doGet(e) {
   if (e && e.parameter && (e.parameter.nombre || e.parameter.cedula)) {
@@ -143,12 +153,15 @@ function doGet(e) {
     inicializarHojaSiEsNecesario(sheet);
 
     var total = obtenerTotalRegistros(sheet);
+    var cedulas = obtenerCedulasRegistradas(sheet);
+
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
       totalRegistros: total,
       limiteMaximo: LIMITE_MAXIMO_REGISTROS,
       cuposDisponibles: Math.max(0, LIMITE_MAXIMO_REGISTROS - total),
-      agotado: total >= LIMITE_MAXIMO_REGISTROS
+      agotado: total >= LIMITE_MAXIMO_REGISTROS,
+      cedulasRegistradas: cedulas
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({
@@ -173,19 +186,4 @@ function doPost(e) {
     data = e.parameter;
   }
   return procesarRegistro(data);
-}
-
-/**
- * Función de prueba para ejecutar directamente desde el editor de Google Apps Script:
- */
-function testPruebaManual() {
-  var respuesta = procesarRegistro({
-    nombre: 'Estudiante Prueba',
-    cedula: '1710034065',
-    email: 'prueba@lametro.edu.ec',
-    celular: '0991234567',
-    tipo: 'Soy Alumni',
-    userAgent: 'Prueba desde editor Apps Script'
-  });
-  Logger.log(respuesta.getContent());
 }
