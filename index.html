@@ -3,40 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metroville 2026 | Registro de Asistencia</title>
-  <meta name="description" content="Registro oficial para la fiesta de Halloween Metroville 2026 - Alumnis y Estudiantes Online de La Metro.">
+  <title>Metroville 2026</title>
+  <meta name="description" content="Registro oficial Metroville 2026 - Alumnis y Estudiantes Online de La Metro.">
   
-  <!-- Favicon e iconos -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="imagenes/logo-metroville1986.png">
-  
-  <!-- Google Fonts opcional o fuentes del sistema -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <!-- Fondo de pantalla completa (100% width x 100vh) -->
+  <!-- Fondo de pantalla completa (100% width x 100vh) nítido y visible -->
   <div class="viewport-background" aria-hidden="true">
     <div class="viewport-overlay"></div>
-    <div class="ambient-glow"></div>
   </div>
 
-  <!-- Contenedor de la Aplicación -->
+  <!-- Contenedor Principal de la Aplicación -->
   <main class="app-wrapper">
     
     <!-- Gran Tarjeta Glassmorphism (Layout Imagen 2) -->
     <div class="glass-master-card" id="glassStage">
       
       <!-- =========================================================
-           PANEL IZQUIERDO: FORMULARIO GLASS (IMAGEN 1 & 2)
+           PANEL IZQUIERDO: FORMULARIO GLASS
            ========================================================= -->
-      <section class="form-panel" aria-labelledby="formTitle">
+      <section class="form-panel">
         <div class="form-scroll-container">
           
-          <!-- Encabezado del Formulario -->
+          <!-- Encabezado del Formulario: Solo el Logo de Metroville -->
           <header class="form-header">
             <div class="brand-row">
               <img 
@@ -44,19 +38,6 @@
                 alt="Logo Metroville" 
                 class="metroville-logo"
               >
-              <span class="event-badge">Halloween 2026</span>
-            </div>
-
-            <h1 class="form-title" id="formTitle">Registro de Asistencia</h1>
-            <p class="form-subtitle">Exclusivo para Alumnis y Estudiantes Online de La Metro.</p>
-
-            <!-- Contador de Cupos -->
-            <div class="quota-banner" id="quotaBanner">
-              <div class="quota-indicator">
-                <span id="quotaIcon">🔥</span>
-                <span id="quotaText">Verificando cupos disponibles...</span>
-              </div>
-              <div class="quota-pill" id="quotaPill">73 Cupos</div>
             </div>
           </header>
 
@@ -74,7 +55,7 @@
                   id="nombreInput" 
                   name="nombre" 
                   class="input-field" 
-                  placeholder="Ej. Mateo Villavicencio" 
+                  placeholder="Nombre y Apellido" 
                   autocomplete="name"
                   required
                 >
@@ -85,14 +66,13 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                 </div>
               </div>
-              <span class="feedback-msg" id="nombreFeedback">Ingresa tu nombre y apellido completo (mínimo 2 palabras).</span>
+              <span class="feedback-msg" id="nombreFeedback"></span>
             </div>
 
             <!-- 2. Cédula (Ecuador Módulo 10) -->
             <div class="input-group">
               <label for="cedulaInput" class="input-label">
                 <span>Cédula de Identidad <span class="required-mark">*</span></span>
-                <span class="input-hint" style="font-size: 10px; color: var(--text-muted);">Ecuador</span>
               </label>
               <div class="input-wrapper">
                 <input 
@@ -100,7 +80,7 @@
                   id="cedulaInput" 
                   name="cedula" 
                   class="input-field" 
-                  placeholder="10 dígitos numéricos" 
+                  placeholder="Cédula de Identidad" 
                   maxlength="10"
                   inputmode="numeric"
                   autocomplete="off"
@@ -113,7 +93,7 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                 </div>
               </div>
-              <span class="feedback-msg" id="cedulaFeedback">10 dígitos (Validación oficial módulo 10).</span>
+              <span class="feedback-msg" id="cedulaFeedback"></span>
             </div>
 
             <!-- 3. Correo Electrónico -->
@@ -127,7 +107,7 @@
                   id="emailInput" 
                   name="email" 
                   class="input-field" 
-                  placeholder="tunombre@ejemplo.com" 
+                  placeholder="Correo Electrónico" 
                   autocomplete="email"
                   required
                 >
@@ -138,14 +118,13 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                 </div>
               </div>
-              <span class="feedback-msg" id="emailFeedback">Te enviaremos la confirmación a esta dirección.</span>
+              <span class="feedback-msg" id="emailFeedback"></span>
             </div>
 
             <!-- 4. Celular (Opcional) -->
             <div class="input-group">
               <label for="celularInput" class="input-label">
-                <span>Número de Celular</span>
-                <span class="input-hint" style="font-size: 10px; color: var(--text-muted);">(Opcional)</span>
+                <span>Número de Celular <span class="input-hint" style="font-size: 11px; color: var(--text-muted);">(Opcional)</span></span>
               </label>
               <div class="input-wrapper">
                 <input 
@@ -153,7 +132,7 @@
                   id="celularInput" 
                   name="celular" 
                   class="input-field" 
-                  placeholder="Ej. 099 123 4567" 
+                  placeholder="Celular" 
                   maxlength="15"
                   inputmode="tel"
                   autocomplete="tel"
@@ -162,13 +141,11 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
               </div>
-              <span class="feedback-msg" id="celularFeedback">Para avisos importantes del evento vía WhatsApp.</span>
+              <span class="feedback-msg" id="celularFeedback"></span>
             </div>
 
             <!-- 5. Casillas de Selección: Soy Alumni vs Soy estudiante del online -->
             <div class="role-selector-container">
-              <label class="role-selector-title">Selecciona tu categoría de vinculación:</label>
-              
               <div class="role-cards-grid" role="radiogroup" aria-label="Categoría de Asistente">
                 
                 <!-- Opción 1: Soy Alumni -->
@@ -185,7 +162,6 @@
                   </div>
                   <div class="role-content">
                     <span class="role-label">Soy Alumni</span>
-                    <span class="role-desc">Graduado La Metro</span>
                   </div>
                 </div>
 
@@ -203,13 +179,12 @@
                   </div>
                   <div class="role-content">
                     <span class="role-label">Soy estudiante del online</span>
-                    <span class="role-desc">Modalidad Virtual</span>
                   </div>
                 </div>
 
               </div>
 
-              <!-- Nota importante requerida si no selecciona -->
+              <!-- Nota requerida si no selecciona -->
               <div class="role-warning-note">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
@@ -225,14 +200,10 @@
             <!-- Botón de Envío -->
             <div class="submit-container">
               <button type="submit" id="submitBtn" class="btn-submit">
-                <span class="btn-text">Confirmar mi Registro</span>
+                <span class="btn-text">Confirmar Registro</span>
                 <span class="btn-spinner" aria-hidden="true"></span>
               </button>
             </div>
-
-            <p class="form-privacy-note">
-              Metroville 2026 • Acceso exclusivo con cédula verificada.
-            </p>
 
             <!-- Logo La Metro en móvil -->
             <div class="mobile-metro-brand">
@@ -243,7 +214,6 @@
                 class="la-metro-brand-link"
               >
                 <img src="imagenes/LogoWhite_LaMetro.svg" alt="La Metro" class="logo-svg">
-                <span class="metro-badge-text">www.lametro.edu.ec</span>
               </a>
             </div>
 
@@ -253,38 +223,32 @@
       </section>
 
       <!-- =========================================================
-           PANEL DERECHO: VIDRIO TRANSPARENTE CON EL MISMO FONDO
-           (Como en Imagen 2, permite ver el fondo a través de glass)
+           PANEL DERECHO: VIDRIO TRANSPARENTE SOBRE EL FONDO REAL
+           (Permite ver el fondo nítidamente a través del marco glass)
            ========================================================= -->
       <section class="glass-preview-panel" aria-hidden="true">
         
-        <!-- Logo de La Metro en la esquina superior derecha (subtle + redirect) -->
+        <!-- Logo de La Metro en la esquina superior derecha (Solo el Logo, sin texto) -->
         <a 
           href="https://www.lametro.edu.ec" 
           target="_blank" 
           rel="noopener noreferrer" 
           class="la-metro-brand-link" 
-          title="Ir al sitio oficial de La Metro"
+          title="Visitar www.lametro.edu.ec"
         >
           <img 
             src="imagenes/LogoWhite_LaMetro.svg" 
-            alt="La Metro Instituto Superior" 
+            alt="La Metro" 
             class="logo-svg"
           >
-          <span class="metro-badge-text">Visitar sitio web</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
         </a>
 
-        <!-- Tarjeta decorativa ambiental sobre el fondo glass -->
+        <!-- Tarjeta decorativa sutil en el panel derecho -->
         <div class="preview-atmosphere-card">
           <span class="atmosphere-tag">Halloween Night</span>
           <h2 class="atmosphere-title">Metroville 2026</h2>
           <p class="atmosphere-desc">
-            Una noche legendaria reservada para nuestra comunidad de Alumnis y alumnos Online. Cupos estrictamente limitados.
+            Una noche legendaria reservada para nuestra comunidad. Cupos limitados.
           </p>
         </div>
 
@@ -306,7 +270,7 @@
       </div>
       <h3 class="modal-title" id="modalTitle">¡Registro Exitoso!</h3>
       <p class="modal-message" id="modalMessage">
-        Tu cupo para <strong>Metroville 2026</strong> ha sido reservado y enviado a la lista oficial.
+        Tu cupo para <strong>Metroville 2026</strong> ha sido registrado.
       </p>
 
       <div class="modal-summary-box">

@@ -1,6 +1,6 @@
 /**
  * Metroville 2026 - Lógica de Aplicación
- * Manejo de Formulario, Validaciones en Tiempo Real, Cuotas e Integración
+ * Manejo de Formulario, Validaciones en Tiempo Real, Control de Cupos e Integración
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,11 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Casillas de rol (Soy Alumni / Soy estudiante del online)
   const cardAlumni = document.getElementById('cardAlumni');
   const cardOnline = document.getElementById('cardOnline');
-
-  // Elementos de cuota
-  const quotaBanner = document.getElementById('quotaBanner');
-  const quotaText = document.getElementById('quotaText');
-  const quotaPill = document.getElementById('quotaPill');
 
   // Modal
   const successModal = document.getElementById('successModal');
@@ -50,12 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function actualizarSeleccionRol(nuevoRol, tarjetaElemento) {
     if (selectedRole === nuevoRol) {
-      // Si hace clic en la que ya está seleccionada, se deselecciona (ninguna opción activa)
+      // Si hace clic en la que ya está seleccionada, se deselecciona (ninguna activa)
       selectedRole = null;
       tarjetaElemento.classList.remove('is-selected');
       tarjetaElemento.setAttribute('aria-checked', 'false');
     } else {
-      // Deseleccionar todas primero
+      // Deseleccionar todas
       [cardAlumni, cardOnline].forEach(card => {
         card.classList.remove('is-selected');
         card.setAttribute('aria-checked', 'false');
@@ -87,25 +82,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 2. VALIDACIONES EN TIEMPO REAL
+  // 2. VALIDACIONES EN TIEMPO REAL (LIMPIAS, SOLO MOSTRAR ERROR SI FALLA)
   // =========================================================================
 
-  // Helper para pintar estado visual de los inputs
   function setFieldState(input, feedbackEl, isValid, message) {
     if (isValid === true) {
       input.classList.add('is-valid');
       input.classList.remove('is-invalid');
-      feedbackEl.textContent = message || '';
-      feedbackEl.className = 'feedback-msg success';
+      if (feedbackEl) feedbackEl.textContent = '';
     } else if (isValid === false) {
       input.classList.add('is-invalid');
       input.classList.remove('is-valid');
-      feedbackEl.textContent = message || '';
-      feedbackEl.className = 'feedback-msg error';
+      if (feedbackEl) feedbackEl.textContent = message || 'Dato no válido';
     } else {
       input.classList.remove('is-valid', 'is-invalid');
-      feedbackEl.textContent = message || '';
-      feedbackEl.className = 'feedback-msg';
+      if (feedbackEl) feedbackEl.textContent = '';
     }
   }
 
@@ -113,21 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
   nombreInput.addEventListener('input', () => {
     const val = nombreInput.value;
     if (val.trim() === '') {
-      setFieldState(nombreInput, nombreFeedback, null, 'Ingresa tu nombre y apellido completo (mínimo 2 palabras).');
+      setFieldState(nombreInput, nombreFeedback, null, '');
       return;
     }
     const res = Validator.validarNombre(val);
     setFieldState(nombreInput, nombreFeedback, res.esValido, res.mensaje);
   });
 
-  // Cédula de Ecuador (Módulo 10, solo números, 10 dígitos)
-  cedulaInput.addEventListener('input', (e) => {
-    // Permitir solo números
+  // Cédula de Ecuador (Módulo 10)
+  cedulaInput.addEventListener('input', () => {
     cedulaInput.value = cedulaInput.value.replace(/\D/g, '').slice(0, 10);
     const val = cedulaInput.value;
 
     if (val.length === 0) {
-      setFieldState(cedulaInput, cedulaFeedback, null, '10 dígitos (Validación oficial módulo 10).');
+      setFieldState(cedulaInput, cedulaFeedback, null, '');
       return;
     }
 
@@ -140,24 +130,23 @@ document.addEventListener('DOMContentLoaded', () => {
     setFieldState(cedulaInput, cedulaFeedback, res.esValido, res.mensaje);
   });
 
-  // Correo electrónico
+  // Correo Electrónico
   emailInput.addEventListener('input', () => {
     const val = emailInput.value;
     if (val.trim() === '') {
-      setFieldState(emailInput, emailFeedback, null, 'Te enviaremos la confirmación a esta dirección.');
+      setFieldState(emailInput, emailFeedback, null, '');
       return;
     }
     const res = Validator.validarEmail(val);
     setFieldState(emailInput, emailFeedback, res.esValido, res.mensaje);
   });
 
-  // Celular (opcional)
+  // Celular (Opcional)
   celularInput.addEventListener('input', () => {
-    // Permitir números y espacios básicos
     celularInput.value = celularInput.value.replace(/[^\d\s\-+()]/g, '');
     const val = celularInput.value;
     if (val.trim() === '') {
-      setFieldState(celularInput, celularFeedback, null, 'Para avisos importantes del evento vía WhatsApp.');
+      setFieldState(celularInput, celularFeedback, null, '');
       return;
     }
     const res = Validator.validarCelular(val);
@@ -165,51 +154,41 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 3. CONSULTA DE CUPOS DISPONIBLES (MÁXIMO 73)
+  // 3. CONTROL DE CUPOS (MÁXIMO 73 INTERNO)
   // =========================================================================
 
-  function actualizarUIcupos(total, max, disponibles) {
+  function actualizarEstadoCupos(total, max, disponibles) {
     totalRegistrados = total;
     cuposDisponibles = disponibles;
     estaAgotado = disponibles <= 0;
 
-    quotaPill.textContent = `${disponibles} Cupos libres`;
-
     if (estaAgotado) {
-      quotaText.textContent = '¡Cupos Agotados para Metroville!';
-      quotaBanner.style.borderColor = 'rgba(239, 68, 68, 0.4)';
       submitBtn.disabled = true;
       submitBtn.querySelector('.btn-text').textContent = 'Cupos Agotados';
-    } else if (disponibles <= 10) {
-      quotaText.textContent = `¡Últimos ${disponibles} cupos disponibles!`;
-      quotaBanner.style.borderColor = 'rgba(245, 158, 11, 0.5)';
     } else {
-      quotaText.textContent = `${disponibles} de ${max} cupos disponibles`;
+      submitBtn.disabled = false;
+      submitBtn.querySelector('.btn-text').textContent = 'Confirmar Registro';
     }
   }
 
   async function consultarCupos() {
     const url = window.CONFIG.APPS_SCRIPT_URL;
 
-    // Si aún no se ha configurado la URL de Apps Script, consultamos almacenamiento local para pruebas
+    // Si aún no se configuró la URL, usar simulación local
     if (!url || url.trim() === '') {
       const registrosLocales = JSON.parse(localStorage.getItem('metroville_test_registros') || '[]');
       const total = registrosLocales.length;
       const max = window.CONFIG.MAX_REGISTRACIONES || 73;
-      const libres = Math.max(0, max - total);
-      actualizarUIcupos(total, max, libres);
+      actualizarEstadoCupos(total, max, Math.max(0, max - total));
       return;
     }
 
     try {
-      const response = await fetch(`${url}?action=getQuota`, {
-        method: 'GET',
-        mode: 'cors'
-      });
+      const response = await fetch(`${url}?action=getQuota`, { method: 'GET', mode: 'cors' });
       if (response.ok) {
         const data = await response.json();
         if (data.status === 'success') {
-          actualizarUIcupos(
+          actualizarEstadoCupos(
             data.totalRegistros || 0,
             data.limiteMaximo || window.CONFIG.MAX_REGISTRACIONES,
             data.cuposDisponibles !== undefined ? data.cuposDisponibles : (window.CONFIG.MAX_REGISTRACIONES - data.totalRegistros)
@@ -217,14 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (err) {
-      console.warn('No se pudo sincronizar cupos en tiempo real:', err);
-      // Fallback a valor por defecto
-      actualizarUIcupos(0, window.CONFIG.MAX_REGISTRACIONES, window.CONFIG.MAX_REGISTRACIONES);
+      console.warn('Control de cupos fallback:', err);
     }
   }
 
   // =========================================================================
-  // 4. ENVÍO DEL FORMULARIO Y REGISTRO EN GOOGLE SHEETS
+  // 4. ENVÍO DEL FORMULARIO
   // =========================================================================
 
   form.addEventListener('submit', async (e) => {
@@ -269,59 +246,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Preparar datos para enviar
     const payload = {
       nombre: nombreInput.value.trim(),
       cedula: cedulaInput.value.trim(),
       email: emailInput.value.trim(),
       celular: celularInput.value.trim(),
-      tipo: selectedRole || 'No especificado (Sin categoría seleccionada)',
+      tipo: selectedRole || 'No especificado (Sin categoría)',
       userAgent: navigator.userAgent
     };
 
-    // Activar estado de carga en el botón
     submitBtn.classList.add('is-loading');
     submitBtn.disabled = true;
 
     try {
       const appsScriptUrl = window.CONFIG.APPS_SCRIPT_URL;
 
-      // MODO SIMULACIÓN LOCAL (si no se ha configurado la URL en config.js)
+      // SIMULACIÓN LOCAL (si no hay URL en config.js)
       if (!appsScriptUrl || appsScriptUrl.trim() === '') {
-        await new Promise(r => setTimeout(r, 900)); // Simulación de latencia
+        await new Promise(r => setTimeout(r, 800));
 
         const registros = JSON.parse(localStorage.getItem('metroville_test_registros') || '[]');
 
-        // Verificar duplicados en prueba local
         if (registros.some(r => r.cedula === payload.cedula)) {
-          throw new Error('Esta cédula ya fue registrada previamente en el modo de prueba.');
+          throw new Error('Esta cédula ya fue registrada previamente en la prueba.');
         }
 
         if (registros.length >= window.CONFIG.MAX_REGISTRACIONES) {
-          throw new Error('Se ha alcanzado el límite máximo de cupos (73).');
+          throw new Error('Se ha alcanzado el límite de 73 registros.');
         }
 
-        registros.push({
-          ...payload,
-          fecha: new Date().toISOString()
-        });
+        registros.push({ ...payload, fecha: new Date().toISOString() });
         localStorage.setItem('metroville_test_registros', JSON.stringify(registros));
 
-        // Feedback
         abrirModalExito(payload);
-        actualizarUIcupos(
+        actualizarEstadoCupos(
           registros.length,
           window.CONFIG.MAX_REGISTRACIONES,
           window.CONFIG.MAX_REGISTRACIONES - registros.length
         );
-        mostrarToast('Registro guardado localmente (Simulación de prueba). Configura la URL de Apps Script para enviar a Google Sheets real.', 'success');
         form.reset();
         resetFormState();
         return;
       }
 
-      // MODO PRODUCCIÓN: Envío real a Google Apps Script
-      // Usamos URLSearchParams o FormData con redirect manual para máxima compatibilidad CORS con Google Apps Script
+      // ENVÍO REAL A GOOGLE APPS SCRIPT
       const formData = new URLSearchParams();
       formData.append('nombre', payload.nombre);
       formData.append('cedula', payload.cedula);
@@ -332,9 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const response = await fetch(appsScriptUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString()
       });
 
@@ -343,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.status === 'success') {
         abrirModalExito(payload);
         if (data.totalRegistros !== undefined) {
-          actualizarUIcupos(
+          actualizarEstadoCupos(
             data.totalRegistros,
             data.limiteMaximo || window.CONFIG.MAX_REGISTRACIONES,
             data.cuposDisponibles
@@ -357,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error('Error al registrar:', error);
-      mostrarToast(error.message || 'Error de conexión con el servidor. Intenta nuevamente.', 'error');
+      mostrarToast(error.message || 'Error de conexión. Intenta nuevamente.', 'error');
     } finally {
       submitBtn.classList.remove('is-loading');
       if (!estaAgotado) {
@@ -367,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 5. MODAL DE ÉXITO Y RESET
+  // 5. MODAL DE ÉXITO
   // =========================================================================
 
   function abrirModalExito(datos) {
@@ -387,9 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   modalCloseBtn.addEventListener('click', cerrarModalExito);
   successModal.addEventListener('click', (e) => {
-    if (e.target === successModal) {
-      cerrarModalExito();
-    }
+    if (e.target === successModal) cerrarModalExito();
   });
 
   function resetFormState() {
@@ -403,21 +367,13 @@ document.addEventListener('DOMContentLoaded', () => {
       inp.classList.remove('is-valid', 'is-invalid');
     });
 
-    nombreFeedback.textContent = 'Ingresa tu nombre y apellido completo (mínimo 2 palabras).';
-    nombreFeedback.className = 'feedback-msg';
-
-    cedulaFeedback.textContent = '10 dígitos (Validación oficial módulo 10).';
-    cedulaFeedback.className = 'feedback-msg';
-
-    emailFeedback.textContent = 'Te enviaremos la confirmación a esta dirección.';
-    emailFeedback.className = 'feedback-msg';
-
-    celularFeedback.textContent = 'Para avisos importantes del evento vía WhatsApp.';
-    celularFeedback.className = 'feedback-msg';
+    [nombreFeedback, cedulaFeedback, emailFeedback, celularFeedback].forEach(f => {
+      if (f) f.textContent = '';
+    });
   }
 
   // =========================================================================
-  // 6. SISTEMA DE TOASTS
+  // 6. TOAST NOTIFICACIONES
   // =========================================================================
 
   function mostrarToast(mensaje, tipo = 'info') {
@@ -438,6 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4500);
   }
 
-  // Inicializar consulta inicial de cupos
+  // Comprobar cupos iniciales
   consultarCupos();
 });

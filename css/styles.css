@@ -1,16 +1,16 @@
 /* ==========================================================================
-   METROVILLE 2026 - GLASSMORPHISM STYLES
-   Inspirado en el diseño frosted glass oscuro (Imagen 1 y 2)
+   METROVILLE 2026 - GLASSMORPHISM STYLES (CLEAN & MINIMALIST)
+   Inspirado en la estética glassmorphism oscura (Imagen 1 y 2)
    ========================================================================== */
 
 :root {
-  --bg-dark: #0a0b10;
-  --glass-card-bg: rgba(14, 15, 22, 0.82);
+  --bg-dark: #07070a;
+  --glass-card-bg: rgba(12, 13, 18, 0.82);
   --glass-surface-light: rgba(255, 255, 255, 0.05);
   --glass-surface-hover: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-focus: rgba(255, 122, 0, 0.65);
-  --glass-specular: rgba(255, 255, 255, 0.28);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-focus: rgba(255, 122, 0, 0.7);
+  --glass-specular: rgba(255, 255, 255, 0.35);
   
   --accent-orange: #ff6a00;
   --accent-orange-glow: rgba(255, 106, 0, 0.35);
@@ -19,13 +19,13 @@
   --accent-red: #ef4444;
 
   --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-secondary: rgba(255, 255, 255, 0.75);
   --text-muted: rgba(255, 255, 255, 0.45);
 
-  --radius-xl: 28px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
+  --radius-xl: 26px;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
 
   --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -50,7 +50,7 @@ html, body {
 }
 
 /* ==========================================================================
-   FONDO FULL WIDTH (100%) Y ALTO (100VH)
+   FONDO FULL WIDTH (100%) Y ALTO (100VH) - NÍTIDO Y VIBRANTE
    ========================================================================== */
 
 .viewport-background {
@@ -65,33 +65,12 @@ html, body {
   z-index: 0;
 }
 
-/* Viñeta y atenuación ambiental para aumentar contraste del glass */
+/* Sutil viñeta en las esquinas que NO oscurece la edificación ni el cielo */
 .viewport-overlay {
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(ellipse at 50% 50%, rgba(10, 10, 14, 0.25) 0%, rgba(5, 5, 8, 0.75) 100%),
-    linear-gradient(to bottom, rgba(5, 5, 8, 0.4) 0%, rgba(5, 5, 8, 0.8) 100%);
+  background: radial-gradient(circle at 50% 50%, transparent 65%, rgba(0, 0, 0, 0.5) 100%);
   pointer-events: none;
-}
-
-/* Partículas/luces sutiles de ambiente de Halloween */
-.ambient-glow {
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 94, 0, 0.12) 0%, rgba(255, 94, 0, 0) 70%);
-  top: 15%;
-  left: 10%;
-  filter: blur(60px);
-  pointer-events: none;
-  animation: pulseGlow 10s ease-in-out infinite alternate;
-}
-
-@keyframes pulseGlow {
-  0% { transform: scale(0.9) translate(0, 0); opacity: 0.6; }
-  100% { transform: scale(1.1) translate(20px, 30px); opacity: 0.9; }
 }
 
 /* ==========================================================================
@@ -110,72 +89,71 @@ html, body {
   padding: 24px;
 }
 
-/* Gran tarjeta Glassmorphism contenedora */
+/* Gran tarjeta Glassmorphism contenedora (Marco de vidrio exterior) */
 .glass-master-card {
   width: 100%;
-  max-width: 1180px;
-  height: min(780px, 94vh);
+  max-width: 1140px;
+  height: min(680px, 92vh);
   display: flex;
   border-radius: var(--radius-xl);
   overflow: hidden;
   position: relative;
   
-  /* Efecto Glass exterior (como en Imagen 1 y 2) */
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  /* Transparente para que la parte derecha muestre la foto nítida */
+  background: transparent;
   
+  /* Borde de cristal con reflejo superior como en la Imagen 1 */
   border: 1px solid var(--glass-border);
   box-shadow: 
-    0 35px 70px rgba(0, 0, 0, 0.65),
-    0 10px 25px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px var(--glass-specular),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.5);
+    0 30px 60px rgba(0, 0, 0, 0.6),
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px var(--glass-specular);
 }
 
-/* Reflejo de luz en el borde superior (Specular highlight de la imagen 1) */
+/* Línea de brillo superior (Specular Highlight) */
 .glass-master-card::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 20%;
-  right: 20%;
+  left: 15%;
+  right: 15%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
   pointer-events: none;
   z-index: 10;
 }
 
 /* ==========================================================================
-   PANEL IZQUIERDO: FORMULARIO GLASS (IMAGEN 1 & 2)
+   PANEL IZQUIERDO: FORMULARIO FROSTED GLASS (ALTO CONTRASTE)
    ========================================================================== */
 
 .form-panel {
-  width: 480px;
+  width: 440px;
   max-width: 100%;
   height: 100%;
   background: var(--glass-card-bg);
-  backdrop-filter: blur(28px) saturate(170%);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 2;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 12px 0 35px rgba(0, 0, 0, 0.45);
 }
 
 .form-scroll-container {
-  padding: 32px 36px 36px 36px;
+  padding: 30px 32px 32px 32px;
   overflow-y: auto;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
-/* Personalización del scrollbar interno */
+/* Scrollbar interno minimalista */
 .form-scroll-container::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 .form-scroll-container::-webkit-scrollbar-track {
   background: transparent;
@@ -184,129 +162,40 @@ html, body {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
 }
-.form-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
 
-/* Cabecera del formulario */
+/* Encabezado: solo el logo */
 .form-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .brand-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
+  justify-content: flex-start;
 }
 
 .metroville-logo {
   height: 44px;
   width: auto;
-  max-width: 220px;
+  max-width: 230px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
-}
-
-.event-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: rgba(255, 106, 0, 0.12);
-  border: 1px solid rgba(255, 106, 0, 0.3);
-  color: #ff9138;
-}
-
-.event-badge::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-orange);
-  box-shadow: 0 0 8px var(--accent-orange);
-}
-
-.form-title {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: #ffffff;
-  margin-bottom: 6px;
-}
-
-.form-subtitle {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.45;
-}
-
-/* Contador de Cupos disponible */
-.quota-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 14px;
-  margin-top: 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 12px;
-}
-
-.quota-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-secondary);
-}
-
-.quota-pill {
-  font-weight: 700;
-  color: #fff;
-  background: rgba(255, 106, 0, 0.25);
-  border: 1px solid rgba(255, 106, 0, 0.4);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-}
-
-.quota-bar-wrapper {
-  width: 70px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.quota-bar-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #ff7b00, #ff4500);
-  border-radius: 4px;
-  transition: width 0.6s ease;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.7));
 }
 
 /* ==========================================================================
-   CAMPOS DEL FORMULARIO
+   CAMPOS DEL FORMULARIO (LIMPIOS Y PULIDOS)
    ========================================================================== */
 
 .registration-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 10px;
+  gap: 12px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   position: relative;
 }
 
@@ -336,9 +225,9 @@ html, body {
   background: var(--glass-surface-light);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
-  padding-right: 38px;
-  font-size: 14px;
+  padding: 11px 14px;
+  padding-right: 36px;
+  font-size: 13.5px;
   color: var(--text-primary);
   outline: none;
   transition: all 0.2s var(--transition-smooth);
@@ -351,14 +240,14 @@ html, body {
 
 .input-field:hover {
   background: var(--glass-surface-hover);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .input-field:focus {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--glass-border-focus);
   box-shadow: 
-    0 0 0 3px rgba(255, 106, 0, 0.15),
+    0 0 0 3px rgba(255, 106, 0, 0.18),
     inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
@@ -375,8 +264,8 @@ html, body {
 .validation-icon {
   position: absolute;
   right: 12px;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,24 +287,21 @@ html, body {
   color: var(--accent-red);
 }
 
+/* Feedback solo visible cuando hay error */
 .feedback-msg {
   font-size: 11px;
-  min-height: 14px;
-  line-height: 1.3;
-  color: var(--text-muted);
+  line-height: 1.2;
+  color: var(--accent-red);
+  min-height: 0;
   transition: all 0.2s ease;
 }
 
-.feedback-msg.error {
-  color: #ff6b6b;
-}
-
-.feedback-msg.success {
-  color: #34d399;
+.feedback-msg:empty {
+  display: none;
 }
 
 /* ==========================================================================
-   SELECCIÓN: SOY ALUMNI / SOY ESTUDIANTE ONLINE (EXCLUSIVAS)
+   SELECCIÓN: SOY ALUMNI / SOY ESTUDIANTE ONLINE
    ========================================================================== */
 
 .role-selector-container {
@@ -423,12 +309,6 @@ html, body {
   flex-direction: column;
   gap: 8px;
   margin-top: 4px;
-}
-
-.role-selector-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
 }
 
 .role-cards-grid {
@@ -442,7 +322,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 11px 12px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid var(--glass-border);
@@ -452,23 +332,21 @@ html, body {
 }
 
 .role-card:hover {
-  background: rgba(255, 255, 255, 0.065);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
-/* Tarjeta seleccionada */
 .role-card.is-selected {
-  background: rgba(255, 106, 0, 0.12);
-  border-color: rgba(255, 106, 0, 0.6);
+  background: rgba(255, 106, 0, 0.14);
+  border-color: rgba(255, 106, 0, 0.65);
   box-shadow: 
-    0 0 16px rgba(255, 106, 0, 0.2),
+    0 0 16px rgba(255, 106, 0, 0.22),
     inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Checkbox circular personalizado */
 .custom-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   border: 1.5px solid rgba(255, 255, 255, 0.35);
   display: flex;
@@ -484,8 +362,8 @@ html, body {
 }
 
 .custom-checkbox svg {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   color: #fff;
   opacity: 0;
   transform: scale(0.5);
@@ -503,55 +381,44 @@ html, body {
 }
 
 .role-label {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
-.role-desc {
-  font-size: 10.5px;
-  color: var(--text-muted);
-}
-
-.role-card.is-selected .role-desc {
-  color: rgba(255, 175, 110, 0.9);
-}
-
-/* Nota pequeña obligatoria por requerimiento */
 .role-warning-note {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
   background: rgba(245, 158, 11, 0.08);
   border: 1px solid rgba(245, 158, 11, 0.25);
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1.35;
   color: #fcd34d;
-  margin-top: 2px;
 }
 
 .role-warning-note svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
   margin-top: 1px;
   color: var(--accent-amber);
 }
 
 /* ==========================================================================
-   BOTÓN DE ENVÍO Y ACCIONES (INSPIRACIÓN IMAGEN 2)
+   BOTÓN DE ENVÍO
    ========================================================================== */
 
 .submit-container {
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 .btn-submit {
   width: 100%;
-  padding: 14px 20px;
+  padding: 13px 20px;
   border: none;
   border-radius: var(--radius-md);
   font-size: 14px;
@@ -566,11 +433,10 @@ html, body {
   position: relative;
   overflow: hidden;
 
-  /* Look de alto impacto (inspirado en el botón contrastante de la Imagen 2) */
   background: #ffffff;
   color: #0c0d12;
   box-shadow: 
-    0 10px 24px rgba(0, 0, 0, 0.4),
+    0 8px 20px rgba(0, 0, 0, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
@@ -578,13 +444,12 @@ html, body {
   background: #f0f0f5;
   transform: translateY(-2px);
   box-shadow: 
-    0 14px 30px rgba(255, 106, 0, 0.25),
+    0 12px 28px rgba(255, 106, 0, 0.25),
     0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .btn-submit:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .btn-submit:disabled {
@@ -615,15 +480,9 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
-.form-privacy-note {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 14px;
-}
-
 /* ==========================================================================
-   PANEL DERECHO: VIDRIO TRANSPARENTE CON EL MISMO FONDO (IMAGEN 2)
+   PANEL DERECHO: VIDRIO TRANSPARENTE SOBRE EL FONDO REAL
+   (Deja ver el fondo completamente nítido)
    ========================================================================== */
 
 .glass-preview-panel {
@@ -633,76 +492,59 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 36px 40px;
+  padding: 30px 34px;
   box-sizing: border-box;
 
-  /* Sutil tinte de vidrio que permite ver la foto de fondo intacta */
-  background: rgba(255, 255, 255, 0.015);
-  backdrop-filter: blur(4px) saturate(115%);
-  -webkit-backdrop-filter: blur(4px) saturate(115%);
+  /* Fondo ultra-sutil que preserva la total nitidez de la foto de fondo */
+  background: rgba(255, 255, 255, 0.01);
 }
 
-/* Borde interno brillante */
-.glass-preview-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-
-/* Logo de La Metro sutil en la esquina superior derecha */
+/* Logo de La Metro (Solo el Logo, sin textos añadidos) */
 .la-metro-brand-link {
   align-self: flex-end;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   text-decoration: none;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 30px;
-  background: rgba(14, 15, 22, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(12, 13, 18, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   transition: all 0.3s ease;
   z-index: 5;
 }
 
 .la-metro-brand-link:hover {
-  background: rgba(14, 15, 22, 0.7);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background: rgba(12, 13, 18, 0.7);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .la-metro-brand-link .logo-svg {
-  height: 22px;
+  height: 24px;
   width: auto;
-  opacity: 0.88;
-  transition: opacity 0.3s ease;
+  opacity: 0.92;
+  transition: all 0.3s ease;
 }
 
 .la-metro-brand-link:hover .logo-svg {
   opacity: 1;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
 }
 
-.la-metro-brand-link .metro-badge-text {
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
-  letter-spacing: 0.3px;
-}
-
-/* Decoración ambiental en el panel derecho */
+/* Tarjeta decorativa sutil en la esquina inferior derecha */
 .preview-atmosphere-card {
   align-self: flex-end;
   margin-top: auto;
-  max-width: 320px;
-  padding: 20px 24px;
+  max-width: 310px;
+  padding: 18px 22px;
   border-radius: var(--radius-lg);
-  background: rgba(14, 15, 22, 0.55);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  background: rgba(12, 13, 18, 0.55);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
 }
@@ -714,11 +556,11 @@ html, body {
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #ff9d42;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .atmosphere-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.3px;
@@ -758,16 +600,16 @@ html, body {
 
 .modal-glass-card {
   width: 100%;
-  max-width: 460px;
-  background: rgba(18, 19, 28, 0.92);
+  max-width: 440px;
+  background: rgba(16, 17, 24, 0.94);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-xl);
-  padding: 36px 32px;
+  padding: 34px 30px;
   text-align: center;
   box-shadow: 
-    0 30px 60px rgba(0, 0, 0, 0.7),
+    0 30px 60px rgba(0, 0, 0, 0.75),
     inset 0 1px 1px rgba(255, 255, 255, 0.3);
   transform: translateY(20px) scale(0.96);
   transition: all 0.3s var(--transition-smooth);
@@ -778,40 +620,40 @@ html, body {
 }
 
 .modal-icon-wrapper {
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: rgba(16, 185, 129, 0.15);
   border: 1px solid rgba(16, 185, 129, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px auto;
+  margin: 0 auto 18px auto;
   color: var(--accent-green);
   box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
 }
 
 .modal-title {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .modal-message {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .modal-summary-box {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 14px 16px;
   text-align: left;
   font-size: 12.5px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -851,7 +693,7 @@ html, body {
 }
 
 /* ==========================================================================
-   NOTIFICACIÓN TOAST
+   TOASTS
    ========================================================================== */
 
 .toast-container {
@@ -909,7 +751,7 @@ html, body {
     flex-direction: column;
     height: auto;
     min-height: calc(100vh - 24px);
-    max-width: 560px;
+    max-width: 520px;
     border-radius: var(--radius-lg);
   }
 
@@ -920,21 +762,19 @@ html, body {
   }
 
   .form-scroll-container {
-    padding: 28px 24px;
+    padding: 28px 22px;
     overflow-y: visible;
   }
 
-  /* En móviles ocultamos el panel de preview para que el formulario sea el rey */
   .glass-preview-panel {
     display: none;
   }
 
-  /* Mostramos el logo de La Metro dentro de la cabecera del form en móvil */
   .mobile-metro-brand {
     display: flex !important;
     justify-content: center;
-    margin-top: 20px;
-    padding-top: 16px;
+    margin-top: 18px;
+    padding-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
