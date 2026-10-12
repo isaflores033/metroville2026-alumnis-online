@@ -2,9 +2,8 @@
  * Configuración general de Metroville 2026
  */
 const CONFIG = {
-  // Pega aquí la URL de tu aplicación web de Google Apps Script (termina en /exec):
-  // Ejemplo: "https://script.google.com/macros/s/AKfycbx.../exec"
-  APPS_SCRIPT_URL: "",
+  // URL de la aplicación web de Google Apps Script vinculada a Google Sheets
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzDLSxqaCmwf8OaGwPxy3ibBI1ce45H0SYrO_68bsl4AWw06BW5O3WckHId8qwsw0pLpA/exec",
 
   // Límite máximo de registros para el evento
   MAX_REGISTRACIONES: 73,
@@ -13,8 +12,8 @@ const CONFIG = {
   EVENTO_NOMBRE: "Metroville 2026",
   SUBTITULO: "Edición Halloween - Alumni & Estudiantes Online",
 
-  // Modo de desarrollo/pruebas locales (si APPS_SCRIPT_URL está vacía, guarda en localStorage como simulación)
-  DEV_FALLBACK_TO_LOCALSTORAGE: true
+  // Modo de desarrollo/pruebas locales (si APPS_SCRIPT_URL está vacía)
+  DEV_FALLBACK_TO_LOCALSTORAGE: false
 };
 
 window.CONFIG = CONFIG;
