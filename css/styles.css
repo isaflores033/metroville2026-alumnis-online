@@ -165,7 +165,7 @@ html, body {
 
 /* Encabezado: solo el logo */
 .form-header {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .brand-row {
@@ -175,11 +175,13 @@ html, body {
 }
 
 .metroville-logo {
-  height: 44px;
-  width: auto;
-  max-width: 230px;
+  height: auto;
+  max-height: 72px;
+  width: 100%;
+  max-width: 320px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 24px rgba(255, 94, 0, 0.25));
+  transition: transform 0.3s ease;
 }
 
 /* ==========================================================================
