@@ -1,0 +1,944 @@
+/* ==========================================================================
+   METROVILLE 2026 - GLASSMORPHISM STYLES
+   Inspirado en el diseño frosted glass oscuro (Imagen 1 y 2)
+   ========================================================================== */
+
+:root {
+  --bg-dark: #0a0b10;
+  --glass-card-bg: rgba(14, 15, 22, 0.82);
+  --glass-surface-light: rgba(255, 255, 255, 0.05);
+  --glass-surface-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-focus: rgba(255, 122, 0, 0.65);
+  --glass-specular: rgba(255, 255, 255, 0.28);
+  
+  --accent-orange: #ff6a00;
+  --accent-orange-glow: rgba(255, 106, 0, 0.35);
+  --accent-amber: #f59e0b;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.45);
+
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   FONDO FULL WIDTH (100%) Y ALTO (100VH)
+   ========================================================================== */
+
+.viewport-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../imagenes/FondoMetroVille-2026.jpeg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Viñeta y atenuación ambiental para aumentar contraste del glass */
+.viewport-overlay {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 50% 50%, rgba(10, 10, 14, 0.25) 0%, rgba(5, 5, 8, 0.75) 100%),
+    linear-gradient(to bottom, rgba(5, 5, 8, 0.4) 0%, rgba(5, 5, 8, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* Partículas/luces sutiles de ambiente de Halloween */
+.ambient-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 94, 0, 0.12) 0%, rgba(255, 94, 0, 0) 70%);
+  top: 15%;
+  left: 10%;
+  filter: blur(60px);
+  pointer-events: none;
+  animation: pulseGlow 10s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.9) translate(0, 0); opacity: 0.6; }
+  100% { transform: scale(1.1) translate(20px, 30px); opacity: 0.9; }
+}
+
+/* ==========================================================================
+   CONTENEDOR MAESTRO (DISPOSICIÓN IMAGEN 2)
+   ========================================================================== */
+
+.app-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Gran tarjeta Glassmorphism contenedora */
+.glass-master-card {
+  width: 100%;
+  max-width: 1180px;
+  height: min(780px, 94vh);
+  display: flex;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  
+  /* Efecto Glass exterior (como en Imagen 1 y 2) */
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 35px 70px rgba(0, 0, 0, 0.65),
+    0 10px 25px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px var(--glass-specular),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Reflejo de luz en el borde superior (Specular highlight de la imagen 1) */
+.glass-master-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   PANEL IZQUIERDO: FORMULARIO GLASS (IMAGEN 1 & 2)
+   ========================================================================== */
+
+.form-panel {
+  width: 480px;
+  max-width: 100%;
+  height: 100%;
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35);
+}
+
+.form-scroll-container {
+  padding: 32px 36px 36px 36px;
+  overflow-y: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Personalización del scrollbar interno */
+.form-scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
+.form-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.form-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+.form-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Cabecera del formulario */
+.form-header {
+  margin-bottom: 24px;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.metroville-logo {
+  height: 44px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+}
+
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: rgba(255, 106, 0, 0.12);
+  border: 1px solid rgba(255, 106, 0, 0.3);
+  color: #ff9138;
+}
+
+.event-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  box-shadow: 0 0 8px var(--accent-orange);
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.form-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* Contador de Cupos disponible */
+.quota-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  margin-top: 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+}
+
+.quota-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.quota-pill {
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 106, 0, 0.25);
+  border: 1px solid rgba(255, 106, 0, 0.4);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.quota-bar-wrapper {
+  width: 70px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.quota-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff7b00, #ff4500);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* ==========================================================================
+   CAMPOS DEL FORMULARIO
+   ========================================================================== */
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.input-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.required-mark {
+  color: var(--accent-orange);
+  margin-left: 3px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  width: 100%;
+  background: var(--glass-surface-light);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  padding-right: 38px;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s var(--transition-smooth);
+  backdrop-filter: blur(8px);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:hover {
+  background: var(--glass-surface-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.input-field:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-border-focus);
+  box-shadow: 
+    0 0 0 3px rgba(255, 106, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Estados de validación */
+.input-field.is-valid {
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+.input-field.is-invalid {
+  border-color: rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.validation-icon {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.2s ease;
+}
+
+.input-field.is-valid ~ .validation-icon.icon-valid {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--accent-green);
+}
+
+.input-field.is-invalid ~ .validation-icon.icon-invalid {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--accent-red);
+}
+
+.feedback-msg {
+  font-size: 11px;
+  min-height: 14px;
+  line-height: 1.3;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.feedback-msg.error {
+  color: #ff6b6b;
+}
+
+.feedback-msg.success {
+  color: #34d399;
+}
+
+/* ==========================================================================
+   SELECCIÓN: SOY ALUMNI / SOY ESTUDIANTE ONLINE (EXCLUSIVAS)
+   ========================================================================== */
+
+.role-selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.role-selector-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.role-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.role-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.22s var(--transition-smooth);
+}
+
+.role-card:hover {
+  background: rgba(255, 255, 255, 0.065);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* Tarjeta seleccionada */
+.role-card.is-selected {
+  background: rgba(255, 106, 0, 0.12);
+  border-color: rgba(255, 106, 0, 0.6);
+  box-shadow: 
+    0 0 16px rgba(255, 106, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Checkbox circular personalizado */
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.role-card.is-selected .custom-checkbox {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange);
+}
+
+.custom-checkbox svg {
+  width: 11px;
+  height: 11px;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s ease;
+}
+
+.role-card.is-selected .custom-checkbox svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.role-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.role-desc {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.role-card.is-selected .role-desc {
+  color: rgba(255, 175, 110, 0.9);
+}
+
+/* Nota pequeña obligatoria por requerimiento */
+.role-warning-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  font-size: 11px;
+  line-height: 1.4;
+  color: #fcd34d;
+  margin-top: 2px;
+}
+
+.role-warning-note svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent-amber);
+}
+
+/* ==========================================================================
+   BOTÓN DE ENVÍO Y ACCIONES (INSPIRACIÓN IMAGEN 2)
+   ========================================================================== */
+
+.submit-container {
+  margin-top: 10px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+
+  /* Look de alto impacto (inspirado en el botón contrastante de la Imagen 2) */
+  background: #ffffff;
+  color: #0c0d12;
+  box-shadow: 
+    0 10px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #f0f0f5;
+  transform: translateY(-2px);
+  box-shadow: 
+    0 14px 30px rgba(255, 106, 0, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(12, 13, 18, 0.25);
+  border-top-color: #0c0d12;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-submit.is-loading .btn-text {
+  opacity: 0;
+}
+.btn-submit.is-loading .btn-spinner {
+  display: block;
+  position: absolute;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.form-privacy-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+
+/* ==========================================================================
+   PANEL DERECHO: VIDRIO TRANSPARENTE CON EL MISMO FONDO (IMAGEN 2)
+   ========================================================================== */
+
+.glass-preview-panel {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 40px;
+  box-sizing: border-box;
+
+  /* Sutil tinte de vidrio que permite ver la foto de fondo intacta */
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(4px) saturate(115%);
+  -webkit-backdrop-filter: blur(4px) saturate(115%);
+}
+
+/* Borde interno brillante */
+.glass-preview-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Logo de La Metro sutil en la esquina superior derecha */
+.la-metro-brand-link {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 30px;
+  background: rgba(14, 15, 22, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.la-metro-brand-link:hover {
+  background: rgba(14, 15, 22, 0.7);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.la-metro-brand-link .logo-svg {
+  height: 22px;
+  width: auto;
+  opacity: 0.88;
+  transition: opacity 0.3s ease;
+}
+
+.la-metro-brand-link:hover .logo-svg {
+  opacity: 1;
+}
+
+.la-metro-brand-link .metro-badge-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.3px;
+}
+
+/* Decoración ambiental en el panel derecho */
+.preview-atmosphere-card {
+  align-self: flex-end;
+  margin-top: auto;
+  max-width: 320px;
+  padding: 20px 24px;
+  border-radius: var(--radius-lg);
+  background: rgba(14, 15, 22, 0.55);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+.atmosphere-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ff9d42;
+  margin-bottom: 6px;
+}
+
+.atmosphere-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.atmosphere-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   MODAL DE CONFIRMACIÓN / ÉXITO (GLASSMORPHISM)
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 10, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-glass-card {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(18, 19, 28, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transform: translateY(20px) scale(0.96);
+  transition: all 0.3s var(--transition-smooth);
+}
+
+.modal-backdrop.is-open .modal-glass-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-icon-wrapper {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  color: var(--accent-green);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.modal-message {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-summary-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 12.5px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.summary-label {
+  color: var(--text-muted);
+}
+
+.summary-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.btn-modal-close {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--accent-orange);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px var(--accent-orange-glow);
+}
+
+.btn-modal-close:hover {
+  background: #ff7b1a;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   NOTIFICACIÓN TOAST
+   ========================================================================== */
+
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(20, 20, 28, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  animation: slideToast 0.3s ease forwards;
+}
+
+.toast.toast-error {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.toast.toast-success {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+@keyframes slideToast {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD Y DISPOSITIVOS MÓVILES
+   ========================================================================== */
+
+@media (max-width: 960px) {
+  .app-wrapper {
+    padding: 12px;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .glass-master-card {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 24px);
+    max-width: 560px;
+    border-radius: var(--radius-lg);
+  }
+
+  .form-panel {
+    width: 100%;
+    border-right: none;
+    box-shadow: none;
+  }
+
+  .form-scroll-container {
+    padding: 28px 24px;
+    overflow-y: visible;
+  }
+
+  /* En móviles ocultamos el panel de preview para que el formulario sea el rey */
+  .glass-preview-panel {
+    display: none;
+  }
+
+  /* Mostramos el logo de La Metro dentro de la cabecera del form en móvil */
+  .mobile-metro-brand {
+    display: flex !important;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.mobile-metro-brand {
+  display: none;
+}
