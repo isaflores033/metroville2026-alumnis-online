@@ -9,8 +9,13 @@ var LIMITE_MAXIMO_REGISTROS = 73;
 
 /**
  * Inicializa la hoja de cálculo con encabezados si está vacía.
+ * Si se ejecuta manualmente desde el botón "Ejecutar", obtiene la hoja activa automáticamente.
  */
 function inicializarHojaSiEsNecesario(sheet) {
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  }
+
   if (sheet.getLastRow() === 0) {
     var headers = [
       'Fecha y Hora',
@@ -28,6 +33,9 @@ function inicializarHojaSiEsNecesario(sheet) {
     range.setFontColor('#ffffff');
     sheet.setFrozenRows(1);
     SpreadsheetApp.flush();
+    Logger.log('Encabezados creados exitosamente.');
+  } else {
+    Logger.log('La hoja ya cuenta con ' + sheet.getLastRow() + ' filas.');
   }
 }
 
@@ -35,6 +43,9 @@ function inicializarHojaSiEsNecesario(sheet) {
  * Cuenta la cantidad real de registros existentes (excluyendo fila 1).
  */
 function obtenerTotalRegistros(sheet) {
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  }
   var lastRow = sheet.getLastRow();
   if (lastRow <= 1) return 0;
   return lastRow - 1;
@@ -57,10 +68,7 @@ function procesarRegistro(data) {
       return ContentService.createTextOutput(JSON.stringify({
         status: 'error',
         code: 'LIMIT_REACHED',
-        message: 'Lo sentimos, se ha alcanzado el límite de 73 cupos.',
-        totalRegistros: totalActual,
-        limiteMaximo: LIMITE_MAXIMO_REGISTROS,
-        cuposDisponibles: 0
+        message: 'Lo sentimos, se ha alcanzado el límite de 73 cupos.'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -75,8 +83,7 @@ function procesarRegistro(data) {
     if (!nombre || !cedula || !email) {
       return ContentService.createTextOutput(JSON.stringify({
         status: 'error',
-        code: 'MISSING_FIELDS',
-        message: 'Faltan campos requeridos.'
+        message: 'Faltan campos obligatorios (Nombre, Cédula o Correo).'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -88,8 +95,7 @@ function procesarRegistro(data) {
         if (cedulaFila === cedula) {
           return ContentService.createTextOutput(JSON.stringify({
             status: 'error',
-            code: 'DUPLICATE_CEDULA',
-            message: 'La cédula ' + cedula + ' ya se encuentra registrada.'
+            message: 'Esta cédula ya se encuentra registrada.'
           })).setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -98,7 +104,7 @@ function procesarRegistro(data) {
     // 4. Fecha de Ecuador
     var fechaRegistro = Utilities.formatDate(new Date(), "America/Guayaquil", "yyyy-MM-dd HH:mm:ss");
 
-    // Guardar fila
+    // Guardar fila (antepone apóstrofe para conservar ceros a la izquierda)
     sheet.appendRow([
       fechaRegistro,
       nombre,
@@ -110,15 +116,9 @@ function procesarRegistro(data) {
     ]);
     SpreadsheetApp.flush();
 
-    var nuevoTotal = totalActual + 1;
-    var cuposRestantes = Math.max(0, LIMITE_MAXIMO_REGISTROS - nuevoTotal);
-
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
-      message: '¡Registro completado exitosamente!',
-      totalRegistros: nuevoTotal,
-      limiteMaximo: LIMITE_MAXIMO_REGISTROS,
-      cuposDisponibles: cuposRestantes
+      message: '¡Registro guardado exitosamente!'
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -133,32 +133,27 @@ function procesarRegistro(data) {
  * GET: Soporta tanto consulta de cupos como registro directo.
  */
 function doGet(e) {
-  // Si trae datos de registro en URL, procesarlo directamente
   if (e && e.parameter && (e.parameter.nombre || e.parameter.cedula)) {
     return procesarRegistro(e.parameter);
   }
 
-  // De lo contrario, devolver estado de cupos
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getActiveSheet();
     inicializarHojaSiEsNecesario(sheet);
 
     var total = obtenerTotalRegistros(sheet);
-    var disponibles = Math.max(0, LIMITE_MAXIMO_REGISTROS - total);
-
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
       totalRegistros: total,
       limiteMaximo: LIMITE_MAXIMO_REGISTROS,
-      cuposDisponibles: disponibles,
+      cuposDisponibles: Math.max(0, LIMITE_MAXIMO_REGISTROS - total),
       agotado: total >= LIMITE_MAXIMO_REGISTROS
     })).setMimeType(ContentService.MimeType.JSON);
-
-  } catch (error) {
+  } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({
       status: 'error',
-      message: error.toString()
+      message: err.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -178,4 +173,19 @@ function doPost(e) {
     data = e.parameter;
   }
   return procesarRegistro(data);
+}
+
+/**
+ * Función de prueba para ejecutar directamente desde el editor de Google Apps Script:
+ */
+function testPruebaManual() {
+  var respuesta = procesarRegistro({
+    nombre: 'Estudiante Prueba',
+    cedula: '1710034065',
+    email: 'prueba@lametro.edu.ec',
+    celular: '0991234567',
+    tipo: 'Soy Alumni',
+    userAgent: 'Prueba desde editor Apps Script'
+  });
+  Logger.log(respuesta.getContent());
 }
