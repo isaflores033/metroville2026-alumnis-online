@@ -5,7 +5,8 @@
  * =======================================================================
  */
 
-var LIMITE_MAXIMO_REGISTROS = 73;
+// Si es null o 0, los registros están completamente abiertos sin límite
+var LIMITE_MAXIMO_REGISTROS = null;
 
 /**
  * Inicializa la hoja con encabezados si está vacía.
@@ -77,12 +78,12 @@ function procesarRegistro(data) {
 
     var totalActual = obtenerTotalRegistros(sheet);
 
-    // 1. Validar límite máximo de cupos
-    if (totalActual >= LIMITE_MAXIMO_REGISTROS) {
+    // 1. Validar límite máximo de cupos (solo si está configurado un límite mayor a 0)
+    if (LIMITE_MAXIMO_REGISTROS && LIMITE_MAXIMO_REGISTROS > 0 && totalActual >= LIMITE_MAXIMO_REGISTROS) {
       return ContentService.createTextOutput(JSON.stringify({
         status: 'error',
         code: 'LIMIT_REACHED',
-        message: 'Lo sentimos, se ha alcanzado el límite de 73 cupos.'
+        message: 'Lo sentimos, se ha alcanzado el límite de cupos.'
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -155,12 +156,17 @@ function doGet(e) {
     var total = obtenerTotalRegistros(sheet);
     var cedulas = obtenerCedulasRegistradas(sheet);
 
+    var tieneLimite = (LIMITE_MAXIMO_REGISTROS !== null && LIMITE_MAXIMO_REGISTROS !== undefined && LIMITE_MAXIMO_REGISTROS > 0);
+    var cuposDisponibles = tieneLimite ? Math.max(0, LIMITE_MAXIMO_REGISTROS - total) : 999999;
+    var agotado = tieneLimite ? (total >= LIMITE_MAXIMO_REGISTROS) : false;
+
     return ContentService.createTextOutput(JSON.stringify({
       status: 'success',
       totalRegistros: total,
-      limiteMaximo: LIMITE_MAXIMO_REGISTROS,
-      cuposDisponibles: Math.max(0, LIMITE_MAXIMO_REGISTROS - total),
-      agotado: total >= LIMITE_MAXIMO_REGISTROS,
+      limiteMaximo: tieneLimite ? LIMITE_MAXIMO_REGISTROS : null,
+      sinLimite: !tieneLimite,
+      cuposDisponibles: cuposDisponibles,
+      agotado: agotado,
       cedulasRegistradas: cedulas
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (err) {

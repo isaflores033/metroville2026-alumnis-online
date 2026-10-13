@@ -167,6 +167,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function actualizarEstadoCupos(total, max, disponibles) {
     totalRegistrados = total;
+
+    // Si está configurado sin límite de registros
+    if (window.CONFIG.SIN_LIMITE_CUPOS || !max) {
+      cuposDisponibles = Infinity;
+      estaAgotado = false;
+      if (soldOutBanner) soldOutBanner.style.display = 'none';
+      submitBtn.disabled = false;
+      submitBtn.querySelector('.btn-text').textContent = 'Confirmar Registro';
+      [nombreInput, cedulaInput, emailInput, celularInput].forEach(inp => {
+        if (inp) inp.disabled = false;
+      });
+      [cardAlumni, cardOnline].forEach(c => {
+        if (c) {
+          c.style.pointerEvents = 'auto';
+          c.style.opacity = '1';
+        }
+      });
+      return;
+    }
+
     cuposDisponibles = disponibles;
     estaAgotado = disponibles <= 0;
 
@@ -210,9 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!url || url.trim() === '') {
       const registrosLocales = JSON.parse(localStorage.getItem('metroville_test_registros') || '[]');
       const total = registrosLocales.length;
-      const max = window.CONFIG.MAX_REGISTRACIONES || 73;
       cedulasRegistradas = [...new Set([...cedulasRegistradas, ...registrosLocales.map(r => r.cedula)])];
-      actualizarEstadoCupos(total, max, Math.max(0, max - total));
+      actualizarEstadoCupos(total, null, Infinity);
       return;
     }
 
@@ -224,11 +243,15 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.cedulasRegistradas && Array.isArray(data.cedulasRegistradas)) {
             cedulasRegistradas = [...new Set([...cedulasRegistradas, ...data.cedulasRegistradas])];
           }
-          actualizarEstadoCupos(
-            data.totalRegistros || 0,
-            data.limiteMaximo || window.CONFIG.MAX_REGISTRACIONES,
-            data.cuposDisponibles !== undefined ? data.cuposDisponibles : (window.CONFIG.MAX_REGISTRACIONES - data.totalRegistros)
-          );
+          if (window.CONFIG.SIN_LIMITE_CUPOS || data.sinLimite) {
+            actualizarEstadoCupos(data.totalRegistros || 0, null, Infinity);
+          } else {
+            actualizarEstadoCupos(
+              data.totalRegistros || 0,
+              data.limiteMaximo || window.CONFIG.MAX_REGISTRACIONES,
+              data.cuposDisponibles !== undefined ? data.cuposDisponibles : (window.CONFIG.MAX_REGISTRACIONES - data.totalRegistros)
+            );
+          }
         }
       }
     } catch (err) {
@@ -316,8 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Esta cédula ya fue registrada previamente en la prueba.');
         }
 
-        if (registros.length >= window.CONFIG.MAX_REGISTRACIONES) {
-          throw new Error('Se ha alcanzado el límite de 73 registros.');
+        if (!window.CONFIG.SIN_LIMITE_CUPOS && window.CONFIG.MAX_REGISTRACIONES && registros.length >= window.CONFIG.MAX_REGISTRACIONES) {
+          throw new Error('Se ha alcanzado el límite de cupos.');
         }
 
         registros.push({ ...payload, fecha: new Date().toISOString() });
@@ -327,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarEstadoCupos(
           registros.length,
           window.CONFIG.MAX_REGISTRACIONES,
-          window.CONFIG.MAX_REGISTRACIONES - registros.length
+          window.CONFIG.SIN_LIMITE_CUPOS ? Infinity : (window.CONFIG.MAX_REGISTRACIONES - registros.length)
         );
         form.reset();
         resetFormState();

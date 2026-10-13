@@ -5,8 +5,9 @@ const CONFIG = {
   // URL de la aplicación web de Google Apps Script vinculada a Google Sheets
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzDLSxqaCmwf8OaGwPxy3ibBI1ce45H0SYrO_68bsl4AWw06BW5O3WckHId8qwsw0pLpA/exec",
 
-  // Límite máximo de registros para el evento
-  MAX_REGISTRACIONES: 73,
+  // Registros abiertos sin límite de cupos
+  SIN_LIMITE_CUPOS: true,
+  MAX_REGISTRACIONES: null,
 
   // Nombre del evento
   EVENTO_NOMBRE: "Metroville 2026",
