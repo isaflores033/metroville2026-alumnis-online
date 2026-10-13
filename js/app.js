@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Casillas de rol (Soy Alumni / Soy estudiante del online)
   const cardAlumni = document.getElementById('cardAlumni');
   const cardOnline = document.getElementById('cardOnline');
+  const soldOutBanner = document.getElementById('soldOutBanner');
 
   // Modal
   const successModal = document.getElementById('successModal');
@@ -170,11 +171,31 @@ document.addEventListener('DOMContentLoaded', () => {
     estaAgotado = disponibles <= 0;
 
     if (estaAgotado) {
+      if (soldOutBanner) soldOutBanner.style.display = 'flex';
       submitBtn.disabled = true;
       submitBtn.querySelector('.btn-text').textContent = 'Cupos Agotados';
+      [nombreInput, cedulaInput, emailInput, celularInput].forEach(inp => {
+        if (inp) inp.disabled = true;
+      });
+      [cardAlumni, cardOnline].forEach(c => {
+        if (c) {
+          c.style.pointerEvents = 'none';
+          c.style.opacity = '0.5';
+        }
+      });
     } else {
+      if (soldOutBanner) soldOutBanner.style.display = 'none';
       submitBtn.disabled = false;
       submitBtn.querySelector('.btn-text').textContent = 'Confirmar Registro';
+      [nombreInput, cedulaInput, emailInput, celularInput].forEach(inp => {
+        if (inp) inp.disabled = false;
+      });
+      [cardAlumni, cardOnline].forEach(c => {
+        if (c) {
+          c.style.pointerEvents = 'auto';
+          c.style.opacity = '1';
+        }
+      });
     }
   }
 

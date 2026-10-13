@@ -44,6 +44,15 @@
           <!-- Formulario Principal -->
           <form id="registrationForm" class="registration-form" novalidate>
             
+            <!-- Banner de Cupos Agotados (aparece automáticamente si se llenan los 73 cupos) -->
+            <div class="sold-out-banner" id="soldOutBanner" style="display: none;" role="alert">
+              <div class="sold-out-icon">🎃</div>
+              <div class="sold-out-content">
+                <h4>¡Cupos Agotados!</h4>
+                <p id="soldOutText">Hemos alcanzado el límite de registros para Metroville 2026. Te invitamos a estar atento a los canales oficiales de La Metro por si se habilitan nuevos cupos.</p>
+              </div>
+            </div>
+
             <!-- 1. Nombre y Apellido -->
             <div class="input-group">
               <label for="nombreInput" class="input-label">
