@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toastContainer = document.getElementById('toastContainer');
 
   // Estado local
-  let selectedRole = null; // null | 'Soy Alumni' | 'Soy estudiante del online'
+  let selectedRole = null; // null | 'Soy estudiante graduado' | 'Soy estudiante del online'
   let cuposDisponibles = window.CONFIG.MAX_REGISTRACIONES || 73;
   let totalRegistrados = 0;
   let estaAgotado = false;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   cardAlumni.addEventListener('click', () => {
-    actualizarSeleccionRol('Soy Alumni', cardAlumni);
+    actualizarSeleccionRol('Soy estudiante graduado', cardAlumni);
   });
 
   cardOnline.addEventListener('click', () => {
